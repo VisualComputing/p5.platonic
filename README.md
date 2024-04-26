@@ -2,7 +2,7 @@
 
 [p5.js](https://p5js.org/) library for rendering of [platonic solids](https://en.wikipedia.org/wiki/Platonic_solid).
 
-<!-- ![A non-Euclidean geometry cube with faces showcasing teapot, bunny, and Buddha models.](p5.platonic.png) -->
+![Platonic solids.](p5.platonic.png)
 
 # Usage
 
