@@ -4,6 +4,38 @@
 
 <!-- ![A non-Euclidean geometry cube with faces showcasing teapot, bunny, and Buddha models.](p5.platonic.png) -->
 
+# Usage
+
+```js
+platonic([length = 100], [center = createVector()], [colors], [fuse = false])
+```
+
+Where `platonic` can be one of the following solids: `tetrahedron`, `hexahedron` (or `cube`), `octahedron`, `dodecahedron`, or `icosahedron`. The optional `colors` array specifies colors for each vertex, and the `fuse` parameter determines if colors are blended across faces. Parameters can be provided in any order.
+
+# Retained mode
+
+Define retained mode `solid`:
+
+```js
+let solid
+
+function setup() {
+  beginGeometry()
+  platonic(args) // see previous section
+  solid = this.endGeometry()
+  solid.clearColors() // optional
+  solid.computeNormals() // optional
+}
+```
+
+Render it as:
+
+```js
+function draw() {
+  model(solid)
+}
+```
+
 # Installation
 
 Link the `p5.platonic.js` library into your HTML file, after you have linked in [p5.js](https://p5js.org/libraries/). For example:
