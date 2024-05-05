@@ -6,7 +6,7 @@
   const INFO =
   {
     LIBRARY: 'p5.platonic',
-    VERSION: '0.0.2',
+    VERSION: '0.0.3',
     HOMEPAGE: 'https://github.com/VisualComputing/p5.platonic'
   };
 
@@ -51,6 +51,22 @@
     });
     return { fuse, length, center, colors };
   };
+
+  p5.prototype.solid = function (...args) {
+    this._renderer.solid(...args);
+  };
+
+  p5.RendererGL.prototype.solid = function (...args) {
+    const solids = [
+      this.tetrahedron,
+      this.hexahedron,
+      this.octahedron,
+      this.dodecahedron,
+      this.icosahedron
+    ];
+    const solid = solids[Math.floor(Math.random() * solids.length)];
+    solid.call(this, ...args);
+  }
 
   p5.prototype.tetrahedron = function (...args) {
     this._renderer.tetrahedron(...args);
