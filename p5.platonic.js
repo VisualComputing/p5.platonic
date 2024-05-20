@@ -60,6 +60,7 @@
     const solidFns = {
       tetrahedron: () => this.tetrahedron,
       hexahedron: () => this.hexahedron,
+      cube: () => this.hexahedron,
       octahedron: () => this.octahedron,
       dodecahedron: () => this.dodecahedron,
       icosahedron: () => this.icosahedron
