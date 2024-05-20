@@ -6,7 +6,7 @@
   const INFO =
   {
     LIBRARY: 'p5.platonic',
-    VERSION: '0.0.3',
+    VERSION: '0.0.4',
     HOMEPAGE: 'https://github.com/VisualComputing/p5.platonic'
   };
 
@@ -52,21 +52,27 @@
     return { fuse, length, center, colors };
   };
 
-  p5.prototype.solid = function (...args) {
-    this._renderer.solid(...args);
+  p5.prototype.solidFn = function (...args) {
+    return this._renderer.solidFn(...args);
   };
 
-  p5.RendererGL.prototype.solid = function (...args) {
-    const solids = [
-      this.tetrahedron,
-      this.hexahedron,
-      this.octahedron,
-      this.dodecahedron,
-      this.icosahedron
-    ];
-    const solid = solids[Math.floor(Math.random() * solids.length)];
-    solid.call(this, ...args);
-  }
+  p5.RendererGL.prototype.solidFn = function (fn) {
+    const solidFns = {
+      tetrahedron: () => this.tetrahedron,
+      hexahedron: () => this.hexahedron,
+      octahedron: () => this.octahedron,
+      dodecahedron: () => this.dodecahedron,
+      icosahedron: () => this.icosahedron
+    };
+    const keys = Object.keys(solidFns);
+    if (typeof fn === 'string' && keys.includes(fn)) {
+      return solidFns[fn]().bind(this);
+    } else {
+      const randomKey = keys[Math.floor(Math.random() * keys.length)];
+      console.log('Selected random solid function:', randomKey);
+      return solidFns[randomKey]().bind(this);
+    }
+  };
 
   p5.prototype.tetrahedron = function (...args) {
     this._renderer.tetrahedron(...args);

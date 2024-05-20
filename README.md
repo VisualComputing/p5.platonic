@@ -10,7 +10,14 @@
 platonic([length = 100], [center = createVector()], [colors], [fuse = false])
 ```
 
-Where `platonic` can be one of the following solids: `tetrahedron`, `hexahedron` (or `cube`), `octahedron`, `dodecahedron`, `icosahedron`, or `solid`, which randomly selects one of the aforementioned solids. The optional `colors` array specifies colors for each vertex, and the `fuse` parameter determines if colors are blended across faces. Parameters can be provided in any order.
+Where `platonic` can be one of the following solids: `tetrahedron`, `hexahedron` (or `cube`), `octahedron`, `dodecahedron`, or `icosahedron`. The optional `colors` array specifies colors for each vertex, and the `fuse` parameter determines if colors are blended across faces. Parameters can be provided in any order.
+
+```js
+const solid = solidFn(key)
+solid([length = 100], [center = createVector()], [colors], [fuse = false])
+```
+
+Where `key` can be one of the following strings: `tetrahedron`, `hexahedron` (or `cube`), `octahedron`, `dodecahedron`, or `icosahedron`. The optional `colors` array specifies colors for each vertex, and the `fuse` parameter determines if colors are blended across faces. Parameters can be provided in any order.
 
 # Retained mode
 
