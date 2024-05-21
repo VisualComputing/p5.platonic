@@ -6,7 +6,7 @@
   const INFO =
   {
     LIBRARY: 'p5.platonic',
-    VERSION: '0.0.5',
+    VERSION: '0.1.0',
     HOMEPAGE: 'https://github.com/VisualComputing/p5.platonic'
   };
 
