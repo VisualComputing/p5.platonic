@@ -6,7 +6,7 @@
   const INFO =
   {
     LIBRARY: 'p5.platonic',
-    VERSION: '0.0.4',
+    VERSION: '0.0.5',
     HOMEPAGE: 'https://github.com/VisualComputing/p5.platonic'
   };
 
@@ -69,7 +69,8 @@
     if (typeof fn === 'string' && keys.includes(fn)) {
       return solidFns[fn]().bind(this);
     } else {
-      const randomKey = keys[Math.floor(Math.random() * keys.length)];
+      const randomKeys = keys.filter(key => key !== 'cube');
+      const randomKey = randomKeys[Math.floor(Math.random() * randomKeys.length)];
       console.log('Selected random solid function:', randomKey);
       return solidFns[randomKey]().bind(this);
     }
