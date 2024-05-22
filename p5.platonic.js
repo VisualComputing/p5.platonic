@@ -6,7 +6,7 @@
   const INFO =
   {
     LIBRARY: 'p5.platonic',
-    VERSION: '0.1.0',
+    VERSION: '0.2.0',
     HOMEPAGE: 'https://github.com/VisualComputing/p5.platonic'
   };
 
@@ -50,6 +50,26 @@
       }
     });
     return { fuse, length, center, colors };
+  };
+
+  p5.prototype.solidModel = function (...args) {
+    return this._renderer.solidModel(...args);
+  };
+
+  p5.RendererGL.prototype.solidModel = function (solid, ...args) {
+    if (typeof solid !== 'function' && typeof solid !== 'string') {
+      args = [solid, ...args]; // shift solid back into args
+      solid = this.solidFn(); // get random solid function
+    } else {
+      solid = (typeof solid === 'function') ? solid : this.solidFn(solid);
+    }
+    this.beginGeometry();
+    solid(...args);
+    const model = this.endGeometry();
+    const { colors } = p5.prototype._parseSolidArgs(...args);
+    colors || model.clearColors();
+    model.computeNormals();
+    return model;
   };
 
   p5.prototype.solidFn = function (...args) {
