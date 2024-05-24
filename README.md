@@ -28,7 +28,7 @@ function setup() {
 }
 ```
 
-Render it as:
+Render it with:
 
 ```js
 function draw() {
