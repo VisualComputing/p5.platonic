@@ -4,66 +4,35 @@
 
 ![Platonic solids.](p5.platonic.png)
 
-
-
-
-Sure, here is the improved wording for the README section:
-
 # Usage
 
 ```js
-solid([length = 100], [center = createVector()], [colors], [fuse = false])
+platonicSolid([length = 100], [center = createVector()], [colors], [fuse = false])
 ```
 
-Where `solid` can be one of the following solid functions: `tetrahedron`, `hexahedron` (or `cube`), `octahedron`, `dodecahedron`, or `icosahedron`. The optional `colors` array specifies colors for each vertex, and the `fuse` parameter determines if colors are blended across faces. Parameters can be provided in any order.
-
-Usage with `solidFn` function:
-
-```js
-const solid = solidFn(key)
-solid([length = 100], [center = createVector()], [colors], [fuse = false])
-```
-
-Here, `key` can be one of the following strings: `'tetrahedron'`, `'hexahedron'` (or `'cube'`), `'octahedron'`, `'dodecahedron'`, `'icosahedron'`, or no key (`undefined`), which randomly selects one of the aforementioned solids.
+Where `platonicSolid` can be one of the following functions: `tetrahedron`, `hexahedron` (or `cube`), `octahedron`, `dodecahedron`, or `icosahedron`. The optional `colors` array specifies colors for each vertex, and the `fuse` parameter determines if colors are blended across faces. Parameters can be provided in any order.
 
 # Retained Mode
 
-To define a retained mode `dodecahedron` solid:
-
-Option 1:
+To define a retained mode platonic solid use [beginGeometry](https://p5js.org/reference/#/p5/beginGeometry) and [endGeometry](https://p5js.org/reference/#/p5/endGeometry). The following snippet for example defines a retained mode `dodecahedronModel`:
 
 ```js
-let solid
+let dodecahedronModel
 
 function setup() {
   beginGeometry()
   dodecahedron(args) // See the previous section for arguments
-  solid = this.endGeometry()
-  solid.clearColors() // Optional
-  solid.computeNormals() // Optional
+  dodecahedronModel = this.endGeometry()
+  dodecahedronModel.clearColors() // Optional
+  dodecahedronModel.computeNormals() // Optional
 }
 ```
 
-Option 2:
-
-```js
-let solid
-
-function setup() {
-  beginGeometry()
-  const dodecahedronFn = solidFn('dodecahedron') 
-  dodecahedronFn(args) // See the previous section for arguments
-  solid = this.endGeometry()
-  solid.clearColors() // Optional
-  solid.computeNormals() // Optional
-}
-```
-
-In either case, render it as:
+Render it as:
 
 ```js
 function draw() {
-  model(solid)
+  model(dodecahedronModel)
 }
 ```
 
