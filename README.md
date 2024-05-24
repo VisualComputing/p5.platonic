@@ -7,10 +7,10 @@
 # Usage
 
 ```js
-platonicSolid([length = 100], [center = createVector()], [colors], [fuse = false])
+solid([length = 100], [center = createVector()], [colors], [fuse = false])
 ```
 
-Where `platonicSolid` can be one of the following functions: `tetrahedron`, `hexahedron` (or `cube`), `octahedron`, `dodecahedron`, or `icosahedron`. The optional `colors` array specifies colors for each vertex, and the `fuse` parameter determines if colors are blended across faces. Parameters can be provided in any order.
+Where `solid` can be one of the following functions: `tetrahedron`, `hexahedron` (or `cube`), `octahedron`, `dodecahedron`, or `icosahedron`. The optional `colors` array specifies colors for each vertex, and the `fuse` parameter determines if colors are blended across faces. Parameters can be provided in any order.
 
 # Retained Mode
 
