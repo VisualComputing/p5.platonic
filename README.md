@@ -14,7 +14,7 @@ Where `platonicSolid` can be one of the following functions: `tetrahedron`, `hex
 
 # Retained Mode
 
-To define a retained mode platonic solid use [beginGeometry](https://p5js.org/reference/#/p5/beginGeometry) and [endGeometry](https://p5js.org/reference/#/p5/endGeometry). The following snippet for example defines a retained mode `dodecahedronModel`:
+To define a retained mode platonic solid use [beginGeometry](https://p5js.org/reference/#/p5/beginGeometry) and [endGeometry](https://p5js.org/reference/#/p5/endGeometry). For example, the following snippet defines a retained mode `dodecahedronModel`:
 
 ```js
 let dodecahedronModel
