@@ -31,20 +31,20 @@ would draw a dodecahedron with a length of `50`, with faces colored `yellow`, `b
 
 There are two ways to define retained mode geometry of the `solid` function with `args` (refer to the previous section for `solid` and `args`) in `setup`.
 
-## Using `platonicSolid` (Recommended Way)
+## Using `platonicGeometry` (Recommended Way)
 
-Call `platonicSolid(solid, args)`, for example:
+Call `platonicGeometry(solid, args)`, for example:
 
 ```js
 let dodecahedronGeom
 
 function setup() {
-  dodecahedronGeom = platonicSolid(dodecahedron, 50,
-                                   ['yellow', 'blue', 'red'])
+  dodecahedronGeom = platonicGeometry(dodecahedron, 50,
+                                      ['yellow', 'blue', 'red'])
 }
 ```
 
-Or call `platonicSolid(args)` to define a random Platonic solid.
+Or call `platonicGeometry(args)` to define a random Platonic solid.
 
 ## Using `beginGeometry` / `endGeometry`
 
