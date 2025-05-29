@@ -1,0 +1,42 @@
+{
+    "name": "p5.platonic",
+    "version": "0.5.0",
+    "description": "A p5.js addon for rendering Platonic solids using WebGL.",
+    "type": "module",
+    "main": "dist/p5.platonic.esm.js",
+    "module": "dist/p5.platonic.esm.js",
+    "exports": {
+        ".": {
+            "import": "./dist/p5.platonic.esm.js"
+        }
+    },
+    "files": [
+        "dist/"
+    ],
+    "scripts": {
+        "build": "rollup -c"
+    },
+    "keywords": [
+        "p5",
+        "p5.js",
+        "webgl",
+        "graphics",
+        "platonic",
+        "solids",
+        "addon",
+        "geometry"
+    ],
+    "author": "JP Charalambos <jpcharalambos@unal.edu.co>",
+    "license": "GPL-3.0-only",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/objetos/p5.platonic.js.git"
+    },
+    "peerDependencies": {
+        "p5": "^2.0.2"
+    },
+    "devDependencies": {
+        "@rollup/plugin-node-resolve": "^16.0.1",
+        "rollup": "^4.41.1"
+    }
+}
