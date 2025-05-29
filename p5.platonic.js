@@ -3,15 +3,6 @@
 // Details here:
 // https://github.com/processing/p5.js/blob/main/contributor_docs/creating_libraries.md
 (function () {
-  const INFO =
-  {
-    LIBRARY: 'p5.platonic',
-    VERSION: '0.4.0',
-    HOMEPAGE: 'https://github.com/VisualComputing/p5.platonic'
-  };
-
-  console.log(INFO);
-
   p5.prototype._solid = function (...args) {
     this._renderer._solid(...args);
   }
