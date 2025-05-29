@@ -3,13 +3,14 @@
 let solid
 
 function setup() {
-  createCanvas(400, 400, WEBGL)
+  createCanvas(600, 400, WEBGL)
   colorMode(RGB, 1)
   strokeWeight(2)
   stroke('white')
-  solid = buildGeometry(() => {
-    dodecahedron(80, colors(), true)
-  })
+  beginGeometry()
+  dodecahedron(80, colors(), true)
+  solid = this.endGeometry()
+  solid.computeNormals()
 }
 
 function draw() {
