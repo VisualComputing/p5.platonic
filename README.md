@@ -13,8 +13,8 @@ solid(args)
 Where `solid` can be one of the following functions: `tetrahedron`, `hexahedron` (or `cube`), `octahedron`, `dodecahedron`, or `icosahedron`, and `args` are:
 
 * `length`: Defines the length of the solid (default is `100`).
-* `center`: A [p5.Vector](https://p5js.org/reference/#/p5.Vector) defining the location of the solid center (default is `(0, 0, 0)`).
-* `colors`: An array containing the [p5.Color](https://p5js.org/reference/#/p5.Color) elements used to color faces or vertices. If no colors are provided, style the `solid` using p5 `fill`, `stroke`, etc.
+* `center`: A [p5.Vector](https://beta.p5js.org/reference/p5/p5.vector/) defining the location of the solid center (default is `(0, 0, 0)`).
+* `colors`: An array containing the [p5.Color](https://beta.p5js.org/reference/p5/p5.color/) elements used to color faces or vertices. If no colors are provided, style the `solid` using p5 `fill`, `stroke`, etc.
 * `fuse`: A boolean. If `true`, defines per-vertex coloring (colors will fuse within faces); if `false`, defines per-face coloring (faces will have uniform coloring). The default is `false`.
 
 All `args` are optional and may be specified in any order. For example, calling in `draw`:
@@ -46,17 +46,17 @@ function setup() {
 
 Or call `platonicGeometry(args)` to define a random Platonic solid.
 
-## Using `beginGeometry` / `endGeometry`
+## Using `buildGeometry`
 
-Using [beginGeometry](https://p5js.org/reference/#/p5/beginGeometry) and [endGeometry](https://p5js.org/reference/#/p5/endGeometry). For example, the following snippet defines a retained mode `dodecahedronGeom`:
+Using [buildGeometry](https://beta.p5js.org/reference/p5/buildgeometry/). For example, the following snippet defines a retained mode `dodecahedronGeom`:
 
 ```js
 let dodecahedronGeom
 
 function setup() {
-  beginGeometry()
-  dodecahedron(50, ['yellow', 'blue', 'red']) // See the previous section for arguments
-  dodecahedronGeom = endGeometry()
+  dodecahedronGeom = buildGeometry(() => {
+    dodecahedron(50, ['yellow', 'blue', 'red']) // See the previous section for arguments
+  })
   dodecahedronGeom.clearColors() // Optional
   dodecahedronGeom.computeNormals() // Optional
 }
@@ -64,7 +64,7 @@ function setup() {
 
 ### Rendering
 
-To render a retained-mode Platonic solid, call [model](https://p5js.org/reference/#/p5/model). For example:
+To render a retained-mode Platonic solid, call [model](https://beta.p5js.org/reference/p5/model/). For example:
 
 ```js
 function draw() {
@@ -82,7 +82,7 @@ Link the `p5.platonic.js` library into your HTML file, after you have linked in 
 <head>
   <script src="p5.js"></script>
   <script src="p5.sound.js"></script>
-  <script src=https://cdn.jsdelivr.net/gh/VisualComputing/p5.platonic/p5.platonic.js></script>
+  <script src=hhttps://cdn.jsdelivr.net/npm/p5.platonic/dist/p5.platonic.js></script>
   <script src="sketch.js"></script>
 </head>
 <body>
@@ -93,7 +93,7 @@ Link the `p5.platonic.js` library into your HTML file, after you have linked in 
 to include its minified version use:
 
 ```html
-<script src=https://cdn.jsdelivr.net/gh/VisualComputing/p5.platonic/p5.platonic.min.js></script>
+<script src=https://cdn.jsdelivr.net/npm/p5.platonic/dist/p5.platonic.min.js></script>
 ```
 
 instead.

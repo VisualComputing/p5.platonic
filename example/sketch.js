@@ -8,8 +8,11 @@ function setup() {
   strokeWeight(2)
   stroke('white')
   solid = buildGeometry(() => {
+    //dodecahedron(50, ['yellow', 'blue', 'red'])
     dodecahedron(80, colors(), true)
   })
+  //solid.clearColors() // Optional
+  //solid.computeNormals() // Optional
 }
 
 function draw() {
