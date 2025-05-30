@@ -1,23 +1,35 @@
 # p5.platonic
 
-[p5.js](https://p5js.org/) library for rendering of [platonic solids](https://en.wikipedia.org/wiki/Platonic_solid).
+[![npm version](https://img.shields.io/npm/v/p5.platonic.svg)](https://www.npmjs.com/package/p5.platonic)
+[![Lint](https://img.shields.io/badge/lint-markdownlint-brightgreen)](https://github.com/DavidAnson/markdownlint)
+
+A [p5.js](https://p5js.org/) library for rendering [Platonic solids](https://en.wikipedia.org/wiki/Platonic_solid) in WEBGL.
 
 ![Platonic solids.](p5.platonic.png)
 
-# Usage
+---
+
+## Usage
 
 ```js
 solid(args)
 ```
 
-Where `solid` can be one of the following functions: `tetrahedron`, `hexahedron` (or `cube`), `octahedron`, `dodecahedron`, or `icosahedron`, and `args` are:
+Where `solid` can be one of the following functions:
 
-* `length`: Defines the length of the solid (default is `100`).
-* `center`: A [p5.Vector](https://beta.p5js.org/reference/p5/p5.vector/) defining the location of the solid center (default is `(0, 0, 0)`).
-* `colors`: An array containing the [p5.Color](https://beta.p5js.org/reference/p5/p5.color/) elements used to color faces or vertices. If no colors are provided, style the `solid` using p5 `fill`, `stroke`, etc.
-* `fuse`: A boolean. If `true`, defines per-vertex coloring (colors will fuse within faces); if `false`, defines per-face coloring (faces will have uniform coloring). The default is `false`.
+- `tetrahedron`
+- `hexahedron` (or `cube`)
+- `octahedron`
+- `dodecahedron`
+- `icosahedron`
 
-All `args` are optional and may be specified in any order. For example, calling in `draw`:
+### Arguments (all optional, any order)
+- `length`: Number — Edge length (default: `100`).
+- `center`: `p5.Vector` — Center position (default: origin).
+- `colors`: Array of colors (either `p5.Color` or string).
+- `fuse`: Boolean — Whether to fuse vertex colors across faces (default: `false`).
+
+### Example (Immediate Mode)
 
 ```js
 function draw() {
@@ -25,85 +37,117 @@ function draw() {
 }
 ```
 
-would draw a dodecahedron with a length of `50`, with faces colored `yellow`, `blue`, and `red` (non-fused colors).
+---
 
-# Retained Mode
+## Retained Mode
 
-There are two ways to define retained mode geometry of the `solid` function with `args` (refer to the previous section for `solid` and `args`) in `setup`.
-
-## Using `platonicGeometry` (Recommended Way)
-
-Call `platonicGeometry(solid, args)`, for example:
+### Option 1: `platonicGeometry` (Recommended)
 
 ```js
-let dodecahedronGeom
+let geom
 
 function setup() {
-  dodecahedronGeom = platonicGeometry(dodecahedron, 50,
-                                      ['yellow', 'blue', 'red'])
+  createCanvas(400, 400, WEBGL)
+  geom = platonicGeometry(dodecahedron, 50, ['yellow', 'blue', 'red'])
 }
-```
-
-Or call `platonicGeometry(args)` to define a random Platonic solid.
-
-## Using `buildGeometry`
-
-Using [buildGeometry](https://beta.p5js.org/reference/p5/buildgeometry/). For example, the following snippet defines a retained mode `dodecahedronGeom`:
-
-```js
-let dodecahedronGeom
-
-function setup() {
-  dodecahedronGeom = buildGeometry(() => {
-    dodecahedron(50, ['yellow', 'blue', 'red']) // See the previous section for arguments
-  })
-  dodecahedronGeom.clearColors() // Optional
-  dodecahedronGeom.computeNormals() // Optional
-}
-```
-
-### Rendering
-
-To render a retained-mode Platonic solid, call [model](https://beta.p5js.org/reference/p5/model/). For example:
-
-```js
 function draw() {
-  model(dodecahedronGeom)
+  background(0)
+  orbitControl()
+  model(geom)
 }
 ```
 
-# Installation
+### Option 2: `buildGeometry`
 
-Link the `p5.platonic.js` library into your HTML file, after you have linked in [p5.js](https://p5js.org/libraries/). For example:
+```js
+let geom
 
-```html | index.html
-<!doctype html>
-<html>
-<head>
-  <script src="p5.js"></script>
-  <script src="p5.sound.js"></script>
-  <script src=hhttps://cdn.jsdelivr.net/npm/p5.platonic/dist/p5.platonic.js></script>
-  <script src="sketch.js"></script>
-</head>
-<body>
-</body>
-</html>
+function setup() {
+  createCanvas(400, 400, WEBGL)
+  geom = buildGeometry(() => {
+    dodecahedron(50, ['yellow', 'blue', 'red'])
+  })
+  geom.clearColors()
+  geom.computeNormals()
+}
+function draw() {
+  background(0)
+  orbitControl()
+  model(geom)
+}
 ```
 
-to include its minified version use:
+---
+
+## ESM Example (Vite)
+
+Install:
+
+```bash
+npm install p5 p5.platonic
+```
+
+Then in `main.js`:
+
+```js
+import p5 from 'p5'
+import 'p5.platonic'
+
+let geom
+
+new p5(p => {
+  p.setup = () => {
+    p.createCanvas(400, 400, p.WEBGL)
+    geom = p.platonicGeometry(p.dodecahedron, 50, ['yellow', 'blue', 'red'])
+  }
+  p.draw = () => {
+    p.background(0)
+    p.orbitControl()
+    p.model(geom)
+  }
+})
+```
+
+### Option 2: `buildGeometry` in ESM
+
+```js
+p.setup = () => {
+  p.createCanvas(400, 400, p.WEBGL)
+  geom = p.buildGeometry(() => {
+    p.dodecahedron(50, ['yellow', 'blue', 'red'])
+  })
+  geom.clearColors()
+  geom.computeNormals()
+}
+```
+
+---
+
+## Installation (IIFE / CDN)
+
+Include after `p5.js`:
 
 ```html
-<script src=https://cdn.jsdelivr.net/npm/p5.platonic/dist/p5.platonic.min.js></script>
+<script src="https://cdn.jsdelivr.net/npm/p5.platonic/dist/p5.platonic.js"></script>
+<!-- or minified -->
+<script src="https://cdn.jsdelivr.net/npm/p5.platonic/dist/p5.platonic.min.js"></script>
 ```
 
-instead.
+---
 
-# [vs-code](https://code.visualstudio.com/) & [vs-codium](https://vscodium.com/) & [gitpod](https://www.gitpod.io/) hacking instructions
+## Development (VS Code / Gitpod / Codium)
 
-Clone the repo (`git clone https://github.com/VisualComputing/p5.platonic`) and open it with your favorite editor.
+```bash
+git clone https://github.com/VisualComputing/p5.platonic
+cd p5.platonic
+npm install
+```
 
-Don't forget to check these [p5.js](https://p5js.org/) references:
+Then open in [VS Code](https://code.visualstudio.com/), [Gitpod](https://gitpod.io), or [Codium](https://vscodium.com).
 
-1. [Library creation](https://github.com/processing/p5.js/blob/main/contributor_docs/creating_libraries.md).
-2. [Software architecture](https://github.com/processing/p5.js/blob/main/src/core/README.md).
-3. [Webgl mode](https://github.com/processing/p5.js/blob/main/contributor_docs/webgl_mode_architecture.md).
+### Useful References
+
+- [p5.js Library Creation](https://beta.p5js.org/contribute/creating_libraries/)
+- [p5.js WebGL Architecture](https://github.com/processing/p5.js/blob/main/contributor_docs/webgl_mode_architecture.md)
+- [buildGeometry](https://beta.p5js.org/reference/p5/buildgeometry/)
+- [model](https://beta.p5js.org/reference/p5/model/)

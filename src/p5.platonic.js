@@ -1,6 +1,6 @@
 /**
  * @file Adds Platonic solid rendering functions to the p5 prototype.
- * @version 0.4.91
+ * @version 0.4.10
  * @author JP Charalambos
  * @license GPL-3.0-only
  *
