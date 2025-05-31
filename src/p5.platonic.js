@@ -45,22 +45,16 @@ p5.registerAddon((p5, fn) => {
   } = {}) {
     const pInst = this._pInst || this.pInst;
     this._rendererState = this.push();
-    pInst.textureMode(pInst.NORMAL);
+    pInst.textureMode(fn.NORMAL);
     for (let i = 0; i < _indices.length; i++) {
-      this.beginShape(_tris ? 0x0004 : undefined);
+      this.beginShape(_tris ? fn.TRIANGLES : undefined);
       !fuse && Array.isArray(colors) && this.fill(colors[i % colors.length]);
       _indices[i].forEach((index) => {
         fuse && Array.isArray(colors) && this.fill(colors[index % colors.length]);
         const v = _vertices[index];
-        if (_uvs && _uvs[index]) {
-          // vertex with UV coordinates
-          this.vertex(v.x, v.y, v.z, _uvs[index].u, _uvs[index].v);
-        } else {
-          // vertex without UV
-          this.vertex(v.x, v.y, v.z);
-        }
+        _uvs && _uvs[index] ? this.vertex(v.x, v.y, v.z, _uvs[index].u, _uvs[index].v) : this.vertex(v.x, v.y, v.z);
       });
-      this.endShape('close');
+      this.endShape(fn.CLOSE);
     }
     this.pop(this._rendererState);
   };
