@@ -26,6 +26,7 @@ p5.registerAddon((p5, fn) => {
   /**
    * Internal WebGL renderer method to draw a mesh from provided vertices, indices, and UVs.
    * UV coordinates (_uvs) are used if present; otherwise geometry is drawn without texturing.
+   * This method ensures textureMode is set to NORMAL internally and restores the user's state afterwards.
    * @param {Object} options - Mesh options.
    * @param {boolean} [options._tris] - Whether to use triangle mode.
    * @param {Array.<p5.Vector>} options._vertices - Array of vertex positions.
@@ -42,7 +43,9 @@ p5.registerAddon((p5, fn) => {
     colors,
     fuse = false
   } = {}) {
+    const pInst = this._pInst || this.pInst;
     this._rendererState = this.push();
+    pInst.textureMode(pInst.NORMAL);
     for (let i = 0; i < _indices.length; i++) {
       this.beginShape(_tris ? 0x0004 : undefined);
       !fuse && Array.isArray(colors) && this.fill(colors[i % colors.length]);
