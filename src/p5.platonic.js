@@ -1,11 +1,12 @@
 /**
  * @file Adds Platonic solid rendering functions to the p5 prototype.
- * @version 0.4.10
+ * @version 0.5.0
  * @author JP Charalambos
  * @license GPL-3.0-only
  *
  * @description
  * A p5.js addon that enables rendering Platonic solids in WEBGL mode.
+ * UV coordinates are assigned internally using spherical mapping.
  */
 
 'use strict';
@@ -16,18 +17,20 @@ p5.registerAddon((p5, fn) => {
   /**
    * Forward arguments to the WebGL renderer's internal _solid method.
    * @method _solid
-   * @param {...*} args - Arguments for solid rendering (tris, vertices, indices, colors, fuse).
+   * @param {...*} args - Arguments for solid rendering (tris, vertices, indices, uvs, colors, fuse).
    */
   fn._solid = function (...args) {
     this._renderer._solid(...args);
   };
 
   /**
-   * Internal WebGL renderer method to draw a mesh from provided vertices and indices.
+   * Internal WebGL renderer method to draw a mesh from provided vertices, indices, and UVs.
+   * UV coordinates (_uvs) are used if present; otherwise geometry is drawn without texturing.
    * @param {Object} options - Mesh options.
    * @param {boolean} [options._tris] - Whether to use triangle mode.
    * @param {Array.<p5.Vector>} options._vertices - Array of vertex positions.
    * @param {Array.<Array.<number>>} options._indices - Index groups defining faces.
+   * @param {Array.<Object>} [options._uvs] - Array of UV coords per vertex: {u, v}.
    * @param {Array} [options.colors] - Color values per face or vertex.
    * @param {boolean} [options.fuse=false] - If true, color per-vertex rather than per-face.
    */
@@ -35,6 +38,7 @@ p5.registerAddon((p5, fn) => {
     _tris,
     _vertices,
     _indices,
+    _uvs,
     colors,
     fuse = false
   } = {}) {
@@ -44,7 +48,14 @@ p5.registerAddon((p5, fn) => {
       !fuse && Array.isArray(colors) && this.fill(colors[i % colors.length]);
       _indices[i].forEach((index) => {
         fuse && Array.isArray(colors) && this.fill(colors[index % colors.length]);
-        this.vertex(_vertices[index].x, _vertices[index].y, _vertices[index].z);
+        const v = _vertices[index];
+        if (_uvs && _uvs[index]) {
+          // vertex with UV coordinates
+          this.vertex(v.x, v.y, v.z, _uvs[index].u, _uvs[index].v);
+        } else {
+          // vertex without UV
+          this.vertex(v.x, v.y, v.z);
+        }
       });
       this.endShape('close');
     }
@@ -137,6 +148,7 @@ p5.registerAddon((p5, fn) => {
 
   /**
    * Draw a tetrahedron mesh.
+   * UV coordinates assigned via spherical mapping.
    * @method tetrahedron
    * @param {...*} args - Arguments: fuse, length, center, colors.
    */
@@ -151,7 +163,22 @@ p5.registerAddon((p5, fn) => {
       fn.createVector(center.x, center.y + length / sqrt2, center.z - length / 3)
     ];
     const _indices = [[0, 1, 2], [0, 2, 3], [0, 3, 1], [1, 3, 2]];
-    this._solid({ _tris: true, _vertices, _indices, colors, fuse });
+
+    // Compute UVs via spherical projection
+    const _uvs = _vertices.map((v) => {
+      const x = v.x - center.x;
+      const y = v.y - center.y;
+      const z = v.z - center.z;
+      const len = fn.sqrt(x * x + y * y + z * z);
+      const theta = fn.atan2(z, x);
+      const phi = fn.asin(y / len);
+      return {
+        u: 0.5 + theta / (2 * fn.PI),
+        v: 0.5 - phi / fn.PI
+      };
+    });
+
+    this._solid({ _tris: true, _vertices, _indices, _uvs, colors, fuse });
   };
 
   /**
@@ -165,6 +192,7 @@ p5.registerAddon((p5, fn) => {
 
   /**
    * Draw a hexahedron (cube) mesh.
+   * UV coordinates assigned via spherical mapping.
    * @method hexahedron
    * @param {...*} args - Arguments: fuse, length, center, colors.
    */
@@ -182,14 +210,34 @@ p5.registerAddon((p5, fn) => {
       fn.createVector(center.x - half, center.y + half, center.z - half)
     ];
     const _indices = [
-      [0, 1, 2, 3], [1, 5, 6, 2], [5, 4, 7, 6],
-      [4, 0, 3, 7], [3, 2, 6, 7], [4, 5, 1, 0]
+      [0, 1, 2, 3],
+      [1, 5, 6, 2],
+      [5, 4, 7, 6],
+      [4, 0, 3, 7],
+      [3, 2, 6, 7],
+      [4, 5, 1, 0]
     ];
-    this._solid({ _vertices, _indices, colors, fuse });
+
+    // Compute UVs via spherical projection
+    const _uvs = _vertices.map((v) => {
+      const x = v.x - center.x;
+      const y = v.y - center.y;
+      const z = v.z - center.z;
+      const len = fn.sqrt(x * x + y * y + z * z);
+      const theta = fn.atan2(z, x);
+      const phi = fn.asin(y / len);
+      return {
+        u: 0.5 + theta / (2 * fn.PI),
+        v: 0.5 - phi / fn.PI
+      };
+    });
+
+    this._solid({ _vertices, _indices, _uvs, colors, fuse });
   };
 
   /**
    * Draw an octahedron mesh.
+   * UV coordinates assigned via spherical mapping.
    * @method octahedron
    * @param {...*} args - Arguments: fuse, length, center, colors.
    */
@@ -205,14 +253,36 @@ p5.registerAddon((p5, fn) => {
       fn.createVector(center.x, center.y, center.z - half)
     ];
     const _indices = [
-      [0, 2, 4], [0, 4, 3], [0, 3, 5], [0, 5, 2],
-      [1, 4, 2], [1, 3, 4], [1, 5, 3], [1, 2, 5]
+      [0, 2, 4],
+      [0, 4, 3],
+      [0, 3, 5],
+      [0, 5, 2],
+      [1, 4, 2],
+      [1, 3, 4],
+      [1, 5, 3],
+      [1, 2, 5]
     ];
-    this._solid({ _tris: true, _vertices, _indices, colors, fuse });
+
+    // Compute UVs via spherical projection
+    const _uvs = _vertices.map((v) => {
+      const x = v.x - center.x;
+      const y = v.y - center.y;
+      const z = v.z - center.z;
+      const len = fn.sqrt(x * x + y * y + z * z);
+      const theta = fn.atan2(z, x);
+      const phi = fn.asin(y / len);
+      return {
+        u: 0.5 + theta / (2 * fn.PI),
+        v: 0.5 - phi / fn.PI
+      };
+    });
+
+    this._solid({ _tris: true, _vertices, _indices, _uvs, colors, fuse });
   };
 
   /**
    * Draw a dodecahedron mesh.
+   * UV coordinates assigned via spherical mapping.
    * @method dodecahedron
    * @param {...*} args - Arguments: fuse, length, center, colors.
    */
@@ -224,23 +294,62 @@ p5.registerAddon((p5, fn) => {
     const c = a * phi;
     const v = (x, y, z) => fn.createVector(x, y, z).add(center);
     const _vertices = [
-      v(-a, -a, -a), v(-a, -a, a), v(-a, a, -a), v(-a, a, a),
-      v(a, -a, -a), v(a, -a, a), v(a, a, -a), v(a, a, a),
-      v(0, -b, -c), v(0, -b, c), v(0, b, -c), v(0, b, c),
-      v(-b, -c, 0), v(-b, c, 0), v(b, -c, 0), v(b, c, 0),
-      v(-c, 0, -b), v(-c, 0, b), v(c, 0, -b), v(c, 0, b)
+      v(-a, -a, -a),
+      v(-a, -a, a),
+      v(-a, a, -a),
+      v(-a, a, a),
+      v(a, -a, -a),
+      v(a, -a, a),
+      v(a, a, -a),
+      v(a, a, a),
+      v(0, -b, -c),
+      v(0, -b, c),
+      v(0, b, -c),
+      v(0, b, c),
+      v(-b, -c, 0),
+      v(-b, c, 0),
+      v(b, -c, 0),
+      v(b, c, 0),
+      v(-c, 0, -b),
+      v(-c, 0, b),
+      v(c, 0, -b),
+      v(c, 0, b)
     ];
     const _indices = [
-      [0, 16, 2, 10, 8], [0, 8, 4, 14, 12], [0, 12, 1, 17, 16],
-      [1, 17, 3, 11, 9], [13, 3, 11, 7, 15], [2, 10, 6, 15, 13],
-      [5, 9, 11, 7, 19], [4, 8, 10, 6, 18], [4, 14, 5, 19, 18],
-      [1, 9, 5, 14, 12], [18, 19, 7, 15, 6], [2, 13, 3, 17, 16]
+      [0, 16, 2, 10, 8],
+      [0, 8, 4, 14, 12],
+      [0, 12, 1, 17, 16],
+      [1, 17, 3, 11, 9],
+      [13, 3, 11, 7, 15],
+      [2, 10, 6, 15, 13],
+      [5, 9, 11, 7, 19],
+      [4, 8, 10, 6, 18],
+      [4, 14, 5, 19, 18],
+      [1, 9, 5, 14, 12],
+      [18, 19, 7, 15, 6],
+      [2, 13, 3, 17, 16]
     ];
-    this._solid({ _vertices, _indices, colors, fuse });
+
+    // Compute UVs via spherical projection
+    const _uvs = _vertices.map((vtx) => {
+      const x = vtx.x - center.x;
+      const y = vtx.y - center.y;
+      const z = vtx.z - center.z;
+      const len = fn.sqrt(x * x + y * y + z * z);
+      const theta = fn.atan2(z, x);
+      const phi = fn.asin(y / len);
+      return {
+        u: 0.5 + theta / (2 * fn.PI),
+        v: 0.5 - phi / fn.PI
+      };
+    });
+
+    this._solid({ _vertices, _indices, _uvs, colors, fuse });
   };
 
   /**
    * Draw an icosahedron mesh.
+   * UV coordinates assigned via spherical mapping.
    * @method icosahedron
    * @param {...*} args - Arguments: fuse, length, center, colors.
    */
@@ -252,16 +361,56 @@ p5.registerAddon((p5, fn) => {
     const c = a / phi;
     const v = (x, y, z) => fn.createVector(x, y, z).add(center);
     const _vertices = [
-      v(0, b, -c), v(0, b, c), v(0, -b, -c), v(0, -b, c),
-      v(b, -c, 0), v(b, c, 0), v(-b, -c, 0), v(-b, c, 0),
-      v(c, 0, -b), v(c, 0, b), v(-c, 0, -b), v(-c, 0, b)
+      v(0, b, -c),
+      v(0, b, c),
+      v(0, -b, -c),
+      v(0, -b, c),
+      v(b, -c, 0),
+      v(b, c, 0),
+      v(-b, -c, 0),
+      v(-b, c, 0),
+      v(c, 0, -b),
+      v(c, 0, b),
+      v(-c, 0, -b),
+      v(-c, 0, b)
     ];
     const _indices = [
-      [0, 1, 7], [0, 7, 10], [0, 10, 8], [0, 8, 5], [0, 5, 1],
-      [1, 5, 9], [5, 8, 4], [8, 10, 2], [10, 7, 6], [7, 1, 11],
-      [1, 9, 11], [11, 9, 3], [9, 5, 4], [4, 3, 9], [3, 4, 2],
-      [3, 2, 6], [2, 4, 8], [3, 6, 11], [6, 2, 10], [6, 7, 11]
+      [0, 1, 7],
+      [0, 7, 10],
+      [0, 10, 8],
+      [0, 8, 5],
+      [0, 5, 1],
+      [1, 5, 9],
+      [5, 8, 4],
+      [8, 10, 2],
+      [10, 7, 6],
+      [7, 1, 11],
+      [1, 9, 11],
+      [11, 9, 3],
+      [9, 5, 4],
+      [4, 3, 9],
+      [3, 4, 2],
+      [3, 2, 6],
+      [2, 4, 8],
+      [3, 6, 11],
+      [6, 2, 10],
+      [6, 7, 11]
     ];
-    this._solid({ _tris: true, _vertices, _indices, colors, fuse });
+
+    // Compute UVs via spherical projection
+    const _uvs = _vertices.map((vtx) => {
+      const x = vtx.x - center.x;
+      const y = vtx.y - center.y;
+      const z = vtx.z - center.z;
+      const len = fn.sqrt(x * x + y * y + z * z);
+      const theta = fn.atan2(z, x);
+      const phi = fn.asin(y / len);
+      return {
+        u: 0.5 + theta / (2 * fn.PI),
+        v: 0.5 - phi / fn.PI
+      };
+    });
+
+    this._solid({ _tris: true, _vertices, _indices, _uvs, colors, fuse });
   };
 });
