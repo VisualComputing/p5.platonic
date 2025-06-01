@@ -44,7 +44,7 @@ p5.registerAddon((p5, fn) => {
     fuse = false
   } = {}) {
     const pInst = this._pInst || this.pInst;
-    this._rendererState = this.push();
+    pInst.push(); // calls: this._rendererState = this.push()
     pInst.textureMode(fn.NORMAL);
     for (let i = 0; i < _indices.length; i++) {
       this.beginShape(_tris ? fn.TRIANGLES : undefined);
@@ -56,7 +56,7 @@ p5.registerAddon((p5, fn) => {
       });
       this.endShape(fn.CLOSE);
     }
-    this.pop(this._rendererState);
+    pInst.pop(); // calls: this.pop(this._rendererState)
   };
 
   /**

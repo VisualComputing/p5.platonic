@@ -93,32 +93,43 @@ Then in `main.js`:
 import p5 from 'p5'
 import 'p5.platonic'
 
-let geom
+// Retained mode
+let dodecahedronGeom, icosahedronGeom
 
 new p5(p => {
   p.setup = () => {
     p.createCanvas(400, 400, p.WEBGL)
-    geom = p.platonicGeometry(p.dodecahedron, 50, ['yellow', 'blue', 'red'])
+    dodecahedronGeom = p.platonicGeometry(p.dodecahedron, 50, true, ['yellow', 'blue', 'red'], true)
+    icosahedronGeom = p.buildGeometry(() => {
+      p.icosahedron(50, ['yellow', 'blue', 'red'])
+    })
+    // icosahedronGeom.clearColors() // optional
+    icosahedronGeom.computeNormals() // optional
   }
+
   p.draw = () => {
-    p.background(0)
+    p.background(255)
     p.orbitControl()
-    p.model(geom)
+    // Retained mode rendering
+    p.model(dodecahedronGeom)
+    p.push()
+    p.translate(-p.width / 4, -p.height / 4, 0)
+    p.rotateZ(p.frameCount * 0.01)
+    p.rotateX(p.frameCount * 0.01)
+    p.rotateY(p.frameCount * 0.01)
+    p.model(icosahedronGeom)
+    p.pop()
+    // Immediate mode rendering
+    p.push()
+    p.translate(-p.width / 4, +p.height / 4, 0)
+    p.rotateZ(p.frameCount * 0.01)
+    p.rotateX(p.frameCount * 0.01)
+    p.rotateY(p.frameCount * 0.01)
+    p.fill('DarkTurquoise')
+    p.tetrahedron()
+    p.pop()
   }
 })
-```
-
-### Option 2: `buildGeometry` in ESM
-
-```js
-p.setup = () => {
-  p.createCanvas(400, 400, p.WEBGL)
-  geom = p.buildGeometry(() => {
-    p.dodecahedron(50, ['yellow', 'blue', 'red'])
-  })
-  geom.clearColors()
-  geom.computeNormals()
-}
 ```
 
 ---
