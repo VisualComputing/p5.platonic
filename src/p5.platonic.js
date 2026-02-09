@@ -1,6 +1,6 @@
 /**
  * @file Adds Platonic solid rendering functions to the p5 prototype.
- * @version 0.5.0
+ * @version 0.5.1
  * @author JP Charalambos
  * @license GPL-3.0-only
  *
@@ -68,7 +68,7 @@ p5.registerAddon((p5, fn) => {
   fn._parseSolidArgs = function (...args) {
     let fuse;
     let length = 100;
-    let center = fn.createVector();
+    let center = fn.createVector(0, 0, 0);
     let colors;
     args.forEach((arg) => {
       if (typeof arg === 'boolean') {
