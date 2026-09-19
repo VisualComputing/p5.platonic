@@ -24,7 +24,7 @@ Where `solid` can be one of the following functions:
 - `icosahedron`
 
 ### Arguments (all optional, any order)
-- `length`: Number — Edge length (default: `100`).
+- `length`: Number — the solid's size (default: `100`): the edge length of the `hexahedron` and the `octahedron`, the distance from the center to a vertex (the circumradius) of the `tetrahedron`, the `dodecahedron` and the `icosahedron`. For the five solids under one size rule, with per-face texture coordinates, see `platonic` in [@nakednous/tree](https://github.com/nakednous/tree).
 - `center`: `p5.Vector` — Center position (default: origin).
 - `colors`: Array of colors (either `p5.Color` or string).
 - `fuse`: Boolean — Whether to fuse vertex colors across faces (default: `false`).

@@ -151,15 +151,15 @@ p5.registerAddon((p5, fn) => {
    */
   p5.RendererGL.prototype.tetrahedron = function (...args) {
     const { fuse, length, center, colors } = fn._parseSolidArgs(...args);
-    const sqrt8 = fn.sqrt(8);
-    const sqrt2 = fn.sqrt(2);
+    // A regular tetrahedron: alternate corners of a cube, at distance `length` from the center.
+    const a = length / fn.sqrt(3);
     const _vertices = [
-      fn.createVector(center.x, center.y, center.z + (length * sqrt8) / 3),
-      fn.createVector(center.x - length / sqrt2, center.y - length / sqrt2, center.z - length / 3),
-      fn.createVector(center.x + length / sqrt2, center.y - length / sqrt2, center.z - length / 3),
-      fn.createVector(center.x, center.y + length / sqrt2, center.z - length / 3)
+      fn.createVector(center.x + a, center.y + a, center.z + a),
+      fn.createVector(center.x + a, center.y - a, center.z - a),
+      fn.createVector(center.x - a, center.y + a, center.z - a),
+      fn.createVector(center.x - a, center.y - a, center.z + a)
     ];
-    const _indices = [[0, 1, 2], [0, 2, 3], [0, 3, 1], [1, 3, 2]];
+    const _indices = [[0, 1, 2], [0, 3, 1], [0, 2, 3], [1, 3, 2]];
 
     // Compute UVs via spherical projection
     const _uvs = _vertices.map((v) => {
@@ -353,45 +353,20 @@ p5.registerAddon((p5, fn) => {
   p5.RendererGL.prototype.icosahedron = function (...args) {
     const { fuse, length, center, colors } = fn._parseSolidArgs(...args);
     const phi = (1 + fn.sqrt(5)) / 2;
-    const a = length / fn.sqrt(3);
+    // A regular icosahedron: (0, ±1, ±φ) and its cyclic shifts, at distance `length` from the center.
+    const a = length / fn.sqrt(1 + phi * phi);
     const b = a * phi;
-    const c = a / phi;
     const v = (x, y, z) => fn.createVector(x, y, z).add(center);
     const _vertices = [
-      v(0, b, -c),
-      v(0, b, c),
-      v(0, -b, -c),
-      v(0, -b, c),
-      v(b, -c, 0),
-      v(b, c, 0),
-      v(-b, -c, 0),
-      v(-b, c, 0),
-      v(c, 0, -b),
-      v(c, 0, b),
-      v(-c, 0, -b),
-      v(-c, 0, b)
+      v(0, a, b), v(0, a, -b), v(0, -a, b), v(0, -a, -b),
+      v(a, b, 0), v(a, -b, 0), v(-a, b, 0), v(-a, -b, 0),
+      v(b, 0, a), v(b, 0, -a), v(-b, 0, a), v(-b, 0, -a)
     ];
     const _indices = [
-      [0, 1, 7],
-      [0, 7, 10],
-      [0, 10, 8],
-      [0, 8, 5],
-      [0, 5, 1],
-      [1, 5, 9],
-      [5, 8, 4],
-      [8, 10, 2],
-      [10, 7, 6],
-      [7, 1, 11],
-      [1, 9, 11],
-      [11, 9, 3],
-      [9, 5, 4],
-      [4, 3, 9],
-      [3, 4, 2],
-      [3, 2, 6],
-      [2, 4, 8],
-      [3, 6, 11],
-      [6, 2, 10],
-      [6, 7, 11]
+      [0, 2, 8], [0, 10, 2], [0, 4, 6], [0, 8, 4], [0, 6, 10],
+      [1, 9, 3], [1, 3, 11], [1, 6, 4], [1, 4, 9], [1, 11, 6],
+      [2, 7, 5], [2, 5, 8], [2, 10, 7], [3, 5, 7], [3, 9, 5],
+      [3, 7, 11], [4, 8, 9], [5, 9, 8], [6, 11, 10], [7, 10, 11]
     ];
 
     // Compute UVs via spherical projection
